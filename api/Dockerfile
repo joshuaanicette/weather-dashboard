@@ -1,7 +1,7 @@
-FROM node:20.16.0-alpine3.22.1
+FROM node:24-alpine3.21
 WORKDIR /app
 COPY package*.json ./
-RUN apk update && apk upgrade && npm ci --omit-dev
+RUN npm install --omit-dev
 COPY . .
 EXPOSE 3000
 CMD ["node", "index.js"]
