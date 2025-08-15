@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const axios = require('axios');
@@ -7,8 +8,14 @@ const app = express();
 app.use(express.json());
 
 // API Key and Base URL for OpenWeatherMap
-const API_KEY = 'd10a876e32cc3030c3874089ca5cb983';
+const API_KEY = process.env.OPENWEATHER_API_KEY;
 const BASE_URL = 'https://api.openweathermap.org/data/2.5/';
+
+// Check for missing API key at startup
+if (!API_KEY) {
+  console.error('❌ Missing API key! Please set OPENWEATHER_API_KEY in your .env file.');
+  process.exit(1);
+}
 
 // SQLite database file
 const SAVED_CITIES_FILE = path.join(__dirname, 'saved_cities.db');
@@ -140,6 +147,7 @@ app.get('/api/cities', (req, res) => {
 });
 
 // Export for Vercel serverless
+const app = require('../server'); // if your express app is in server.js
 module.exports = app;
 
 // Only start the server if running directly (not required by another file)
