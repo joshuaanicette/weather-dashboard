@@ -1,0 +1,45 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+    background-color: #f4f4f9;
+}
+h1 {
+    color: #333;
+}
+.input-section, .weather-data, .air-pollution, .forecast {
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    background-color: #fff;
+}
+input[type="text"] {
+    padding: 10px;
+    width: 60%;
+    margin-right: 10px;
+}
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #0056b3;
+}
+.saved-cities ul, .forecast ul {
+    list-style: none;
+    padding: 0;
+}
+.saved-cities li, .forecast li {
+    cursor: pointer;
+    padding: 5px;
+}
+.saved-cities li:hover {
+    background-color: #e0e0e0;
+}

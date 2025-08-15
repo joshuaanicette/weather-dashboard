@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Weather Dashboard</h1>
+    <div class="input-section">
+        <h2>Enter City</h2>
+        <input type="text" id="cityInput" placeholder="e.g., London">
+        <button onclick="fetchWeather()">Get Weather</button>
+        <button onclick="startVoiceRecognition()">Speak City</button>
+    </div>
+    <div class="saved-cities">
+        <h2>Saved Cities</h2>
+        <ul id="savedCities"></ul>
+    </div>
+    <div class="weather-data">
+        <h2>Current Weather</h2>
+        <p id="weatherInfo">Enter a city to see weather data</p>
+    </div>
+    <div class="air-pollution">
+        <h2>Air Pollution</h2>
+        <p id="aqiInfo">No data available</p>
+    </div>
+    <div class="forecast">
+        <h2>24-Hour Forecast</h2>
+        <ul id="forecastList"></ul>
+    </div>
+    <script>
+        const API_URL = '/api'; // Use relative path for Vercel; update for local Docker
+        async function fetchWeather() {
+            const city = document.getElementById('cityInput').value.trim();
+            if (!city) {
+                alert('Please enter or speak a city name');
+                return;
+            }
+            const response = await fetch(`${API_URL}/weather?city=${encodeURIComponent(city)}`, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await response.json();
+            if (data.weather) {
+                document.getElementById('weatherInfo').innerText = `
+                    City: ${data.weather.name}
+                    Temperature: ${data.weather.temp_f.toFixed(1)}°F / ${data.weather.temp_c.toFixed(1)}°C
+                    Feels Like: ${data.weather.feels_f.toFixed(1)}°F / ${data.weather.feels_c.toFixed(1)}°C
+                    Weather: ${data.weather.description}
+                    Humidity: ${data.weather.humidity}%
+                    Wind Speed: ${data.weather.wind_speed} m/s
+                    Coordinates: (${data.weather.lat}, ${data.weather.lon})
+                `;
+                document.getElementById('aqiInfo').innerText = `
+                    Air Quality Index (AQI): ${data.aqi.aqi} - ${data.aqi.level}
+                `;
+                const forecastList = document.getElementById('forecastList');
+                forecastList.innerHTML = '';
+                data.forecast.forEach(item => {
+                    const li = document.createElement('li');
+                    li.innerText = `${item.dt_txt}: ${item.temp_f.toFixed(1)}°F, Humidity: ${item.humidity}%, Rain: ${item.rain}mm, Snow: ${item.snow}mm`;
+                    forecastList.appendChild(li);
+                });
+                updateSavedCities();
+            } else {
+                alert('Error fetching weather data');
+            }
+        }
+
+        async function updateSavedCities() {
+            const response = await fetch(`${API_URL}/cities`);
+            const cities = await response.json();
+            const ul = document.getElementById('savedCities');
+            ul.innerHTML = '';
+            cities.forEach(city => {
+                const li = document.createElement('li');
+                li.innerText = city;
+                li.onclick = () => {
+                    document.getElementById('cityInput').value = city;
+                    fetchWeather();
+                };
+                ul.appendChild(li);
+            });
+        }
+
+        function startVoiceRecognition() {
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = () => {
+                document.getElementById('cityInput').placeholder = 'Listening...';
+            };
+
+            recognition.onresult = (event) => {
+                const city = event.results[0][0].transcript.trim();
+                document.getElementById('cityInput').value = city;
+                document.getElementById('cityInput').placeholder = 'e.g., London';
+                fetchWeather();
+            };
+
+            recognition.onerror = (event) => {
+                document.getElementById('cityInput').placeholder = 'e.g., London';
+                alert('Speech recognition error: ' + event.error);
+            };
+
+            recognition.onend = () => {
+                document.getElementById('cityInput').placeholder = 'e.g., London';
+            };
+
+            recognition.start();
+        }
+
+        // Load saved cities on page load
+        updateSavedCities();
+    </script>
+</body>
+</html>
