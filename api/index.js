@@ -7,8 +7,8 @@ const app = express();
 app.use(express.json());
 
 // API Key and Base URL for OpenWeatherMap
-const API_KEY = '8ebd10ad04f96444e9024741ec50b1b2';
-const BASE_URL = 'http://api.openweathermap.org/data/2.5/';
+const API_KEY = 'd10a876e32cc3030c3874089ca5cb983';
+const BASE_URL = 'https://api.openweathermap.org/data/2.5/';
 
 // SQLite database file
 const SAVED_CITIES_FILE = path.join(__dirname, 'saved_cities.db');
