@@ -2,33 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Dashboard</title>
     <link rel="stylesheet" href="/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="/scripts.js" defer></script>
 </head>
 <body>
-    <h1>Weather Dashboard</h1>
-    <div class="input-section">
-        <h2>Enter City</h2>
-        <input type="text" id="cityInput" placeholder="e.g., London">
-        <button onclick="fetchWeather()">Get Weather</button>
-        <button onclick="startVoiceRecognition()">Speak City</button>
-    </div>
-    <div class="saved-cities">
-        <h2>Saved Cities</h2>
-        <ul id="savedCities"></ul>
-    </div>
-    <div class="weather-data">
-        <h2>Current Weather</h2>
-        <p id="weatherInfo">Enter a city to see weather data</p>
-    </div>
-    <div class="air-pollution">
-        <h2>Air Pollution</h2>
-        <p id="aqiInfo">No data available</p>
-    </div>
-    <div class="forecast">
-        <h2>24-Hour Forecast</h2>
-        <ul id="forecastList"></ul>
-    </div>
+    <header>
+        <h1>Weather Dashboard</h1>
+    </header>
+    <main>
+        <section class="input-section">
+            <h2>Enter City</h2>
+            <input type="text" id="cityInput" placeholder="e.g., London">
+            <button onclick="fetchWeather()">Get Weather</button>
+            <button onclick="startVoiceRecognition()">Speak City</button>
+            </section>
+        <section class="saved-cities">
+            <h2>Saved Cities</h2>
+            <ul id="savedCities"></ul>
+        </section>
+        <section class="weather-data">
+            <h2>Current Weather</h2>
+            <p id="weatherInfo">Enter a city to see weather data</p>
+        </section>
+        <section class="air-pollution">
+            <h2>Air Pollution</h2>
+            <p id="aqiInfo">No data available</p>
+        </section>
+        <section class="forecast-graph" id="forecastGraph">
+            <h2>24-Hour Forecast</h2>
+            <ul id="forecastList"></ul>
+            <canvas id="tempChart" width="400" height="200"></canvas>
+            <canvas id="humidityChart" width="400" height="200"></canvas>
+            <canvas id="rainChart" width="400" height="200"></canvas>
+            <canvas id="snowChart" width="400" height="200"></canvas>
+        </section>
     <script>
         const API_URL = '/api'; // Use relative path for Vercel; update for local Docker
         async function fetchWeather() {
@@ -116,5 +126,6 @@
         // Load saved cities on page load
         updateSavedCities();
     </script>
+    </main>
 </body>
 </html>
